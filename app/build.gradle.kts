@@ -84,5 +84,4 @@ dependencies {
     implementation("com.google.mlkit:text-recognition-devanagari:16.0.0")
     implementation("com.google.mlkit:language-id:17.0.5")
     implementation("com.google.mlkit:translate:17.0.2")
-    implementation("org.opencv:opencv:4.9.0")
 }

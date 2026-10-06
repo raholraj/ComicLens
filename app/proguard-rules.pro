@@ -1,3 +1,1 @@
--keep class org.opencv.** { *; }
 -keep class com.google.mlkit.** { *; }
--dontwarn org.opencv.**
