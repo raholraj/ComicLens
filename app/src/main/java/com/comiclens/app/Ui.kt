@@ -1,5 +1,6 @@
 package com.comiclens.app
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -22,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,7 +45,16 @@ fun AppTheme(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun AppRoot(vm: MainVm = viewModel()) {
+fun AppRoot() {
+    val ctx = LocalContext.current
+    val vm: MainVm = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return MainVm(ctx.applicationContext as Application) as T
+            }
+        }
+    )
     val nav = rememberNavController()
     NavHost(nav, "home") {
         composable("home") { Home(vm) { nav.navigate("new") } }
