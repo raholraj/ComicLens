@@ -1,30 +1,26 @@
 package com.comiclens.app
 
 import android.app.Application
+import android.content.Context
 import dagger.hilt.android.HiltAndroidApp
 import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
+import java.util.Date
 
 @HiltAndroidApp
 class ComicLensApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        installCrashLogger()
-    }
-
-    private fun installCrashLogger() {
         val previous = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            try {
-                val dir = File(filesDir, "logs").apply { mkdirs() }
-                val sw = StringWriter()
-                throwable.printStackTrace(PrintWriter(sw))
-                File(dir, "crash_${System.currentTimeMillis()}.txt")
-                    .writeText("Thread: ${thread.name}\n$sw")
-            } catch (_: Throwable) {
+        Thread.setDefaultUncaughtExceptionHandler { thread, error ->
+            runCatching {
+                CrashLog.file(this).appendText("${Date()} [${thread.name}]\n${error.stackTraceToString()}\n\n")
             }
-            previous?.uncaughtException(thread, throwable)
+            previous?.uncaughtException(thread, error)
         }
     }
+}
+
+object CrashLog {
+    fun file(ctx: Context) = File(ctx.filesDir, "crash.log")
+    fun read(ctx: Context): String = runCatching { file(ctx).takeIf { it.exists() }?.readText() }.getOrNull().orEmpty()
 }
