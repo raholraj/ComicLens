@@ -1,40 +1,8 @@
-name: Build APK
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-  workflow_dispatch:
-
+# deprecated - use android.yml
+name: deprecated
+on: workflow_dispatch
 jobs:
-  build:
+  skip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
-        with:
-          packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
-
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 8.7
-
-      - name: Build debug + release
-        run: gradle assembleDebug assembleRelease --stacktrace
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ComicLens-debug
-          path: app/build/outputs/apk/debug/*.apk
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ComicLens-release
-          path: app/build/outputs/apk/release/*.apk
+      - run: echo "use android.yml"
